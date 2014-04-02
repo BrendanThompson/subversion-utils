@@ -1,0 +1,50 @@
+#!/bin/bash
+
+DAV=svn
+AUTHTYPE=Basic
+AUTHNAME="Subversion Repos"
+REQUIRE=valid-user
+
+SUBVERSIONCONF="/Users/bthompson/Development/Subversion-utils/subversion.conf"
+
+createConf() {
+	local CREATE="touch $SUBVERSIONCONF"
+	eval $CREATE
+}
+
+
+
+# echo -n "What's your name? "
+# read NAME 
+# echo "Your name is $NAME"
+
+
+echo "This is a script to create an SVN Repo and update HTTPd."
+echo "version: 0.0.1"
+
+echo -n "SVN Location: "
+read SVNPATH
+
+echo -n "SVN URI: "
+read LOCATION
+
+echo -n "User Auth File Location: "
+read AUTHUSERFILE
+
+append() {
+	echo "<Location $LOCATION>" >> $SUBVERSIONCONF
+	echo "		DAV $DAV" >> $SUBVERSIONCONF
+	echo "		SVNPath $SVNPATH" >> $SUBVERSIONCONF
+	echo "		AuthType $AUTHTYPE" >> $SUBVERSIONCONF
+	echo "		AuthName $AUTHNAME" >> $SUBVERSIONCONF
+	echo "		AuthUserFile $AUTHUSERFILE" >> $SUBVERSIONCONF
+	echo "		Require $REQUIRE" >> $SUBVERSIONCONF
+	echo "</Location>" >> $SUBVERSIONCONF
+}
+
+if [[ -e "~/Development/Subversion-utils/subversion.conf" ]]; then
+	append
+else	
+	createConf
+	append
+fi
